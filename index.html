@@ -43,6 +43,8 @@ html{height:100%;box-sizing:border-box}
 *,*::before,*::after{box-sizing:inherit}
 body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f-ui);overflow:hidden;
   -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.app{visibility:hidden}
+.app.on{visibility:visible}
 .app{height:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:10px;padding-inline:16px;padding-block:10px}
 header{display:flex;align-items:center;justify-content:space-between;gap:12px}
 h1{margin:0;font-family:var(--f-logo);font-weight:400;font-size:19px;letter-spacing:.04em;white-space:nowrap;
@@ -201,7 +203,7 @@ h1{margin:0;font-family:var(--f-logo);font-weight:400;font-size:19px;letter-spac
   <p class="keys">キーボード: ↑ 前へ ／ ←→ 向き ／ F 叩く ／ Space 調べる ／ E 飲む ／ M 地図</p>
 </div>
 
-<section class="screen" id="titleScr" hidden>
+<section class="screen" id="titleScr">
   <div class="screen-in">
     <img class="title-chest" id="titleChest" alt="">
     <h2 class="logo">ダンジョン<br>アタック</h2>
@@ -1380,8 +1382,7 @@ try{const v=localStorage.getItem('dungeon-attack-diff');if(v==='easy'||v==='norm
 function syncDiff(){$('dEasy').setAttribute('aria-checked',String(diffSel==='easy'));$('dNormal').setAttribute('aria-checked',String(diffSel==='normal'))}
 function pickDiff(d){if(MaruoOpening.isPlaying()||ranking.isPanelOpen())return;diffSel=d;syncDiff();try{localStorage.setItem('dungeon-attack-diff',d)}catch(e){};SFX.examine()}
 function showTitle(){
-  $('resultScr').hidden=true;$('titleScr').hidden=false;syncDiff();showSummary(ranking.getSummary());
-  $('titleChest').src=SPR_SRC.chestC;
+  $('resultScr').hidden=true;$('titleScr').hidden=false;document.querySelector('.app').classList.remove('on');syncDiff();showSummary(ranking.getSummary());
 }
 function startGame(){
   if(MaruoOpening.isPlaying()||ranking.isPanelOpen())return;
@@ -1390,6 +1391,7 @@ function startGame(){
      curse:0,curseSteps:0,drainAcc:0,regenAcc:0,bag:[]};
   warned={};hurt=0;busy=false;hideAsk();closeMap();
   enterFloor(1,'down');
+  document.querySelector('.app').classList.add('on');
   $('titleScr').hidden=true;$('resultScr').hidden=true;
   update();resize();
 }
@@ -1436,6 +1438,7 @@ window.addEventListener('keydown',e=>{
 let texturesReady=false;
 function ensureTextures(){if(!texturesReady){buildTextures();texturesReady=true}}
 try{document.fonts&&document.fonts.load('40px "Dela Gothic One"','ダンジョンアタックバシッ！ドゴォッシュワゴツンガラスカ宝剣宝盾指輪腕輪歴史書ネックレスメダルツボ')}catch(e){}
+$('titleChest').src=SPR_SRC.chestC;syncDiff();showSummary(ranking.getSummary());
 MaruoOpening.play().then(showTitle);
 setTimeout(ensureTextures,80);
 requestAnimationFrame(frame);
