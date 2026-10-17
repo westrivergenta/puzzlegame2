@@ -39,6 +39,9 @@
   color-scheme:dark;
 }
 [hidden]{display:none!important}
+/* plain cover in the opening's own colour, so nothing shows before the logo starts or after it fades */
+#boot{position:fixed;inset:0;z-index:2147482999;background:#1a1238;transition:opacity .35s}
+#boot.out{opacity:0;pointer-events:none}
 html{height:100%;box-sizing:border-box}
 *,*::before,*::after{box-sizing:inherit}
 body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f-ui);overflow:hidden;
@@ -157,6 +160,7 @@ h1{margin:0;font-family:var(--f-logo);font-weight:400;font-size:19px;letter-spac
 <body>
 
 
+<div id="boot" aria-hidden="true"></div>
 <div class="app">
   <header>
     <h1>ダンジョンアタック</h1>
@@ -1439,7 +1443,7 @@ let texturesReady=false;
 function ensureTextures(){if(!texturesReady){buildTextures();texturesReady=true}}
 try{document.fonts&&document.fonts.load('40px "Dela Gothic One"','ダンジョンアタックバシッ！ドゴォッシュワゴツンガラスカ宝剣宝盾指輪腕輪歴史書ネックレスメダルツボ')}catch(e){}
 $('titleChest').src=SPR_SRC.chestC;syncDiff();showSummary(ranking.getSummary());
-MaruoOpening.play().then(showTitle);
+MaruoOpening.play().then(()=>{showTitle();const bt=$('boot');bt.classList.add('out');setTimeout(()=>bt.remove(),400)});
 setTimeout(ensureTextures,80);
 requestAnimationFrame(frame);
 })();
